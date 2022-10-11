@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ScalaCompilerConfiguration">
+    <profile name="sbt 1" modules="CSE 250,fall-2022-pa2-sorted-list-ishtiaqa1_4688" />
+  </component>
+</project>
