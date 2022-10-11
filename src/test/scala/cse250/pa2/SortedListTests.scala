@@ -215,9 +215,11 @@ class SortedListTests extends AnyFlatSpec {
     val listed = List(9,8,7,6,5,4,3,2,1)
     list2.insert(0,tail)
     for (i <- listed) {
-      val heads = list2.headNode.get.value
-      list2.insert(i, tail)
-      assert(list2.headNode.get.value != heads)
+      if (list2.headNode.isDefined) {
+        val heads = list2.headNode.get.value
+        list2.insert(i, tail)
+        assert(list2.headNode.get.value != heads)
+      }
     }
   }
 }
