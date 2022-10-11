@@ -211,7 +211,7 @@ class SortedListTests extends AnyFlatSpec {
         assert(list.lastNode.get.value != tails)
       }
     }
-
+/*
     val list2 = new SortedList[Int]()
     val listed = List(9,8,7,6,5,4,3,2,1)
     for (i <- listed) {
@@ -222,6 +222,6 @@ class SortedListTests extends AnyFlatSpec {
         list2.insert(i, tail)
         assert(list2.headNode.get.value != heads)
       }
-    }
+    }*/
   }
 }
