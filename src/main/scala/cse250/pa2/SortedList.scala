@@ -73,7 +73,21 @@ class SortedList[T: Ordering] extends mutable.Seq[T]
    */
   def findRefBefore(elem: T, hint: SortedListNode[T]): Option[SortedListNode[T]] = 
   {
-    ???
+    var caseacc:Option[SortedListNode[T]] = null
+    var list: Option[SortedListNode[T]] = Option(hint)
+    while (list.get.value != null && list.get.next != null && list.get.value != elem) {
+      if (compare(elem, list.get.value) < 0){
+        caseacc = list
+      }
+      list = list.get.next
+    }
+    if (list.get.value == elem) {
+      list
+    } else if (list.get.next.isEmpty){
+      caseacc
+    } else {
+      None
+    }
   }
 
   /**
@@ -93,7 +107,21 @@ class SortedList[T: Ordering] extends mutable.Seq[T]
    */
   def findRefBefore(elem: T): Option[SortedListNode[T]] = 
   {
-    ???
+    var caseacc:Option[SortedListNode[T]] = null
+    var list: Option[SortedListNode[T]] = lastNode
+    while (list.get.value != null && list.get.next != null && list.get.value != elem) {
+      if (compare(elem, list.get.value) < 0){
+        caseacc = list
+      }
+      list = list.get.next
+    }
+    if (list.get.value == elem) {
+      list
+    } else if (list.get.next.isEmpty){
+      caseacc
+    } else {
+      None
+    }
   }
 
   /**
@@ -117,7 +145,13 @@ class SortedList[T: Ordering] extends mutable.Seq[T]
    */
   def insert(elem: T, hint: SortedListNode[T]): SortedListNode[T] =
   {
-    ???
+    var list = hint
+    while (compare(elem,list.value)<0 && list.next != null){
+      list = list.next.get
+    }
+    list.next = Option(new SortedListNode[T](elem,list.next,Option(list)))
+    length += 1
+    list.next.get
   }
 
   /**
@@ -138,7 +172,28 @@ class SortedList[T: Ordering] extends mutable.Seq[T]
    */
   def insert(elem: T): SortedListNode[T] =
   {
-    ???
+    if (length != 0) {
+      var list: SortedListNode[T] = lastNode.get
+      if (compare(elem,list.value) < 0 && list.prev != null) {
+        list = new SortedListNode[T](elem,Option(list),list.prev)
+        list.prev.get.next = Option(list)
+        list
+      } else if (compare(elem,list.value) < 0) {
+        list = new SortedListNode[T](elem,Option(list),null)
+        list
+      } else {
+        while (compare(elem, list.value) < 0 && list.next != null) {
+          list = list.next.get
+        }
+        list.next = Option(new SortedListNode[T](elem, list.next, Option(list)))
+        length += 1
+        list.next.get
+      }
+    } else {
+      lastNode = Option(new SortedListNode[T](elem,null,null))
+      length += 1
+      lastNode.get
+    }
   }
 
   /**
@@ -151,7 +206,19 @@ class SortedList[T: Ordering] extends mutable.Seq[T]
    */
   def findRef(elem: T): Option[SortedListNode[T]] = 
   {
-    ???
+    if (length != 0) {
+      var list = lastNode
+      while (list.get.value != elem && list.get.next.isDefined) {
+        list = list.get.next
+      }
+      if (list == headNode && list.get.value == elem) {
+        list
+      } else {
+        None
+      }
+    } else {
+      None
+    }
   }
 
   /**
@@ -168,7 +235,15 @@ class SortedList[T: Ordering] extends mutable.Seq[T]
    */
   def getRef(idx: Int): SortedListNode[T] =
   {
-    ???
+    var lengthacc = 0
+    if (idx < 0 || idx >= length) {
+      lastNode.get.next.get
+    } else {
+      while (lengthacc != idx && lastNode.get.next.isDefined){
+        lastNode = lastNode.get.next
+      }
+      lastNode.get
+    }
   }
 
   /**
@@ -182,7 +257,15 @@ class SortedList[T: Ordering] extends mutable.Seq[T]
    */
   def apply(idx: Int): T = 
   {
-    ???
+    var lengthacc = 0
+    if (idx < 0 || idx >= length) {
+      lastNode.get.next.get.value
+    } else {
+      while (lengthacc != idx && lastNode.get.next != null){
+        lastNode = lastNode.get.next
+      }
+      lastNode.get.value
+    }
   }
 
   /**
@@ -194,7 +277,14 @@ class SortedList[T: Ordering] extends mutable.Seq[T]
    */
   def remove(ref: SortedListNode[T]): T =
   {
-    ???
+    if (ref.prev == null) {
+      ref.next.get.prev = ref.prev
+      ref.value
+    } else {
+      ref.next.get.prev = ref.prev
+      ref.prev.get.next = ref.next
+      ref.value
+    }
   }
 
   /**

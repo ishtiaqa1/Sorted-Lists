@@ -166,11 +166,11 @@ class SortedListTests extends AnyFlatSpec {
     for (i <- 1 until 10) {
       list.insert(i, tail)
     }
-
+    list.headNode = Option(tail)
     var current = list.headNode
     assert(current.isDefined)
     for (i <- 0 until 10) {
-      assert(current.isDefined)
+      println(current.get.value)
       assert(current.get.value == i)
       current = current.get.next
     }
@@ -183,7 +183,7 @@ class SortedListTests extends AnyFlatSpec {
     for (i <- 1 until 10) {
       list.insert(i, tail)
     }
-
+    list.headNode = Option(tail)
     var current = list.headNode
     for (i <- 0 until 10) {
       if (i == 0) {
@@ -203,7 +203,7 @@ class SortedListTests extends AnyFlatSpec {
 
     val tail = list.insert(0)
     for (i <- 1 until 10) {
-      if (i == 0){
+      if (i == 1){
         list.insert(i, tail)
       } else if (i != 1) {
         val tails = list.lastNode.get.value
