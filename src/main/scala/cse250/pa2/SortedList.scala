@@ -146,12 +146,17 @@ class SortedList[T: Ordering] extends mutable.Seq[T]
   def insert(elem: T, hint: SortedListNode[T]): SortedListNode[T] =
   {
     var list = hint
-    while (compare(elem,list.value)<0 && list.next != null){
-      list = list.next.get
+    while (compare(elem,list.value)>0 && list.prev != null){
+      list = list.prev.get
     }
-    list.next = Option(new SortedListNode[T](elem,list.next,Option(list)))
+    if (list.prev != null) {
+      list.prev = Option(new SortedListNode[T](elem, Option(list), list.prev))
+    } else {
+      list.prev = Option(new SortedListNode[T](elem, Option(list), null))
+    }
+    list.prev.get.next = Option(list)
     length += 1
-    list.next.get
+    list.prev.get
   }
 
   /**
@@ -172,27 +177,23 @@ class SortedList[T: Ordering] extends mutable.Seq[T]
    */
   def insert(elem: T): SortedListNode[T] =
   {
-    if (length != 0) {
-      var list: SortedListNode[T] = lastNode.get
-      if (compare(elem,list.value) < 0 && list.prev != null) {
-        list = new SortedListNode[T](elem,Option(list),list.prev)
-        list.prev.get.next = Option(list)
-        list
-      } else if (compare(elem,list.value) < 0) {
-        list = new SortedListNode[T](elem,Option(list),null)
-        list
-      } else {
-        while (compare(elem, list.value) < 0 && list.next != null) {
-          list = list.next.get
-        }
-        list.next = Option(new SortedListNode[T](elem, list.next, Option(list)))
-        length += 1
-        list.next.get
-      }
-    } else {
+    if (length == 0) {
       lastNode = Option(new SortedListNode[T](elem,null,null))
       length += 1
       lastNode.get
+    } else {
+      var list = lastNode.get
+      while (compare(elem,list.value)<0 && list.prev != null && compare(elem,list.prev.get.value) > 0) {
+        list = list.prev.get
+      }
+      if (list.prev != null) {
+        list.prev = Option(new SortedListNode[T](elem, Option(list), list.prev))
+      } else {
+        list.prev = Option(new SortedListNode[T](elem, null, list.prev))
+      }
+      list.prev.get.next = Option(list)
+      length += 1
+      list.prev.get
     }
   }
 
@@ -208,7 +209,7 @@ class SortedList[T: Ordering] extends mutable.Seq[T]
   {
     if (length != 0) {
       var list = lastNode
-      while (list.get.value != elem && list.get.next.isDefined) {
+      while (list.get.value != elem && list.get.next != null) {
         list = list.get.next
       }
       if (list == headNode && list.get.value == elem) {
